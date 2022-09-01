@@ -1,0 +1,52 @@
+#component-pane {
+  position: fixed;
+  background-color: white;
+  width: 50%;
+  height: 500px;
+  bottom: -20px;
+  left: 50%;
+  border-radius: 6px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.component-pane-maximized {
+  transform: translate(-50%, 0px);
+  animation: moveUp 0.25s;
+}
+
+.component-pane-minimized {
+  transform: translate(-50%, 400px);
+}
+
+.component-pane-minimized-animated {
+  transform: translate(-50%, 400px);
+  animation: moveDown 0.25s;
+}
+
+@keyframes moveDown {
+  from {
+    transform: translate(-50%, 0px);
+  }
+  to {
+    transform: translate(-50%, 400px);
+  }
+}
+
+@keyframes moveUp {
+  from {
+    transform: translate(-50%, 400px);
+  }
+  to {
+    transform: translate(-50%, 0px);
+  }
+}
+
+button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  padding-left: 10px;
+}
