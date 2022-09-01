@@ -51,12 +51,14 @@ class Hud extends React.Component {
   }
 
   minimizeComponentPane() {
-    this.setState({
-      componentPaneMaximized: false,
-      classes: {
-        componentPane: "component-pane-minimized-animated"
-      }
-    })
+    if (this.state.componentPaneMaximized) {
+      this.setState({
+        componentPaneMaximized: false,
+        classes: {
+          componentPane: "component-pane-minimized-animated"
+        }
+      })
+    }
   }
 
   updateComponent(i) {

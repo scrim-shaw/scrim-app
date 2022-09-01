@@ -170,12 +170,16 @@ export class Canvas {
   }
 
   highlight(lh, rh) {
-    this.components.forEach((component) => {
-      component.selected = intersects(lh, rh, component.l, component.r)
-    })
+    const w = Math.abs(lh.x - rh.x); const h = Math.abs(lh.y - rh.y); const a = w*h
+    if (a > 20) {
+      this.components.forEach((component) => {
+        component.selected = intersects(lh, rh, component.l, component.r)
+      })
+    }
   }
 
   setComponentFocus(component) {
+    console.log('set component focus')
     this.components.forEach((element) => {
       element.selected = false;
       if (element === component) {
@@ -442,6 +446,9 @@ export class Canvas {
 
       this.dragging = false;
       this.canvas.highlighter.clear();
+
+      this.dragData = null;
+      this.initialPosition = null;
     }
   }
 
