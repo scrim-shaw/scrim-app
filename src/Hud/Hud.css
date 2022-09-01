@@ -1,8 +1,8 @@
 #component-pane {
   position: fixed;
   background-color: white;
-  width: 50%;
-  height: 500px;
+  width: 700px;
+  height: 510px;
   bottom: -20px;
   left: 50%;
   border-radius: 6px;

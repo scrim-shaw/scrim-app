@@ -1,6 +1,6 @@
 import './Hud.css';
 import React from 'react';
-import { getComponents } from './HudDataManager';
+import { getComponents, fetchImage } from './HudDataManager';
 
 class Hud extends React.Component {
   constructor(props) {
@@ -11,7 +11,8 @@ class Hud extends React.Component {
       classes: {
         componentPane: "component-pane-minimized"
       },
-      components: []
+      components: [],
+      images: []
     }
   } 
 
@@ -20,12 +21,24 @@ class Hud extends React.Component {
   }
   
   fetchComponents() {
-    getComponents().then(response =>{
+    getComponents().then(response => {
       this.setState({
         components: response.results
       })
+      this.fetchImages(response.results)
     }) 
+    
+  }
 
+  fetchImages(components) {
+    components.forEach(component => {
+      fetchImage(component.icon).then(url => {
+        var images = this.state.images;
+        images[component.id] = url
+
+        this.setState({images: images})
+      })
+    })
   }
 
   toggleComponentPane() {
@@ -37,8 +50,24 @@ class Hud extends React.Component {
     })
   }
 
+  minimizeComponentPane() {
+    this.setState({
+      componentPaneMaximized: false,
+      classes: {
+        componentPane: "component-pane-minimized-animated"
+      }
+    })
+  }
+
   updateComponent(i) {
-    window.updateActiveComponent(this.state.components[i])
+    var component = this.state.components[i]
+    var image = this.state.images[component.id]
+    if (image) {
+      component.localUrl = image
+    }
+
+    window.updateActiveComponent(component)
+    this.minimizeComponentPane()
   }
 
   render() {
@@ -46,7 +75,13 @@ class Hud extends React.Component {
       <div className={this.state.classes.componentPane} id="component-pane">
         <button onClick={this.toggleComponentPane.bind(this)}>^</button> <br/>
         {this.state.components.map((component, i) => {
-          return (<button key={i} onClick={this.updateComponent.bind(this, i)}><img key={i} width={48} height={48} src={component.icon}></img></button>)
+          return (
+            <button key={i} onClick={this.updateComponent.bind(this, i)}>
+              {this.state.images[component.id] &&
+                <img key={i} width={55} height={55} src={this.state.images[component.id]}></img>
+              }
+            </button>
+          )
         })}
       </div>
     );

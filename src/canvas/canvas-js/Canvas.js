@@ -106,8 +106,14 @@ export class Canvas {
         newTexture = texture;
       }
     } else if (componentData.type === 'image') {
-      component = Sprite.from(componentData.icon);
-      //component.scale.set(0.5, 0.5)
+      var imageUrl;
+      if (componentData.localUrl) {
+        imageUrl = componentData.localUrl
+      } else {
+        imageUrl = componentData.icon
+      }
+
+      component = Sprite.from(imageUrl);
     } else if (componentData.type === 'brush') {
       if (texture) {
         component = new Sprite(texture);
@@ -228,7 +234,7 @@ export class Canvas {
     document.addEventListener('keyup', (event) => {
       if (event.key === ' ') {
         this.components.forEach((component) => {
-          if (component.selected && component.dragging) {
+          if (component.selected) {
             const newComponent = this.createComponent(component.x, component.y, component.componentData, null, component.textureRef);
             this.addComponent(newComponent, false);
 

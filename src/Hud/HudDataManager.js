@@ -1,7 +1,4 @@
 export async function getComponents() {
-    var myHeaders = new Headers();
-    myHeaders.append("x-api-key", "D735pDPhkb4gdoFw2FpSbaqbJwEi8QHp8IuGmeFo");
-
     var requestOptions = {
         method: 'GET',
         headers: {
@@ -17,4 +14,17 @@ export async function getComponents() {
     return await response
         .json()
         .then(response => JSON.parse(response.body))
+}
+
+export function fetchImage(imageUrl) {
+    var requestOptions = {
+        method: 'GET',
+        headers: { "Cache-Control": 'no-cache' },
+    };
+
+    return fetch(imageUrl, requestOptions)
+    .then(response => response.blob())
+    .then(imageBlob => {
+        return URL.createObjectURL(imageBlob);
+    })
 }
