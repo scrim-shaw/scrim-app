@@ -24,6 +24,7 @@ export class Canvas {
   setupContainer() {
     this.container = new Container();
 
+    this.setupGridLines(this.vw, this.vh);
     this.setupBackground(this.vw, this.vh);
     this.setupHighlighter();
 
@@ -76,6 +77,26 @@ export class Canvas {
   setupHighlighter() {
     this.highlighter = new Graphics();
     this.container.addChild(this.highlighter);
+  }
+
+  setupGridLines(vw, vh) {
+    this.gridLines = new Graphics();
+    this.gridLines
+    .clear()
+
+    const frequency = 35;
+    for (var x = 0; x < vw; x++) {
+      for (var y = 0; y < vh; y++) {
+         if (x%frequency == 0 && y%frequency == 0) {
+          this.gridLines
+                  .beginFill(0x34495e, 0.2)
+                  .drawCircle(x, y, 1)
+                  .endFill()
+         }
+      }
+    }
+
+    this.container.addChild(this.gridLines)
   }
 
   setupBackground(vw, vh) {
@@ -175,7 +196,15 @@ export class Canvas {
       this.components.forEach((component) => {
         component.selected = intersects(lh, rh, component.l, component.r)
       })
+    } else {
+      this.clearFocus();
     }
+  }
+
+  clearFocus() {
+    this.components.forEach((component) => {
+      component.selected = false;
+    })
   }
 
   setComponentFocus(component) {
