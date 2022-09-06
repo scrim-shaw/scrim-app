@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
+import ReactGA from "react-ga4";
 
 class Hud extends React.Component {
   constructor(props) {
@@ -22,6 +23,11 @@ class Hud extends React.Component {
     }
 
     window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
+
+    ReactGA.initialize("G-7496DWME29");
+    ReactGA.send("pageview");
+
+    console.log('sending pageview')
   }
 
   activeComponentUpdated(componentId) {
