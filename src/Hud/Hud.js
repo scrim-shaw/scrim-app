@@ -26,8 +26,6 @@ class Hud extends React.Component {
 
     ReactGA.initialize("G-7496DWME29");
     ReactGA.send("pageview");
-
-    console.log('sending pageview')
   }
 
   activeComponentUpdated(componentId) {
@@ -42,7 +40,6 @@ class Hud extends React.Component {
   
   fetchComponents() {
     getComponents().then(response => {
-      console.log(response.results)
       this.setState({
         components: response.results
       })
