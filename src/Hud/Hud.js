@@ -83,6 +83,11 @@ class Hud extends React.Component {
   updateComponent(id) {
     var component = this.state.components.find(component => { return component.id === id })
 
+    ReactGA.event("clicked_component", {
+      componentId: component.id,
+      componentName: component.name
+    });
+
     if (component) {
       var image = this.state.images[component.id]
       if (image) {
