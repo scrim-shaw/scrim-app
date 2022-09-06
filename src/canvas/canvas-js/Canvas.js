@@ -39,12 +39,16 @@ export class Canvas {
 
   setActiveComponent(activeComponent) {
     this.activeComponent = activeComponent;
+    var componentId = null
 
     if (activeComponent) {
       this.setupForeground(this.vw, this.vh);
+      componentId = activeComponent.id
     } else {
       this.foreground.interactive = false;
     }
+
+    window.activeComponentUpdated(componentId)
   }
 
   setActiveTool(activeTool) {
@@ -80,7 +84,11 @@ export class Canvas {
   }
 
   setupGridLines(vw, vh) {
-    this.gridLines = new Graphics();
+    if (!this.gridLines) {
+      this.gridLines = new Graphics();
+      this.container.addChild(this.gridLines)
+    }
+    
     this.gridLines
     .clear()
 
@@ -95,8 +103,6 @@ export class Canvas {
          }
       }
     }
-
-    this.container.addChild(this.gridLines)
   }
 
   setupBackground(vw, vh) {
@@ -208,7 +214,6 @@ export class Canvas {
   }
 
   setComponentFocus(component) {
-    console.log('set component focus')
     this.components.forEach((element) => {
       element.selected = false;
       if (element === component) {
@@ -307,32 +312,32 @@ export class Canvas {
         }
       }
 
-      var one = {
-        "options": {
-            "disappear": true
-        },
-        "id": "18",
-        "icon": "https://scrimage-icons.s3.amazonaws.com/icons8-pen-disappear-64.png",
-        "name": "Disappearing Pen",
-        "type": "brush"
-      }
-      var two = {
-        "options": {
-            "disappear": false
-        },
-        "id": "16",
-        "icon": "https://scrimage-icons.s3.amazonaws.com/icons8-pen-64.png",
-        "name": "Pen",
-        "type": "brush"
-      }
+      // var one = {
+      //   "options": {
+      //       "disappear": true
+      //   },
+      //   "id": "18",
+      //   "icon": "https://scrimage-icons.s3.amazonaws.com/icons8-pen-disappear-64.png",
+      //   "name": "Disappearing Pen",
+      //   "type": "brush"
+      // }
+      // var two = {
+      //   "options": {
+      //       "disappear": false
+      //   },
+      //   "id": "16",
+      //   "icon": "https://scrimage-icons.s3.amazonaws.com/icons8-pen-64.png",
+      //   "name": "Pen",
+      //   "type": "brush"
+      // }
 
-      if (event.key === '1') {
-        this.setActiveComponent(one)
-      }
+      // if (event.key === '1') {
+      //   this.setActiveComponent(one)
+      // }
 
-      if (event.key === '2') {
-        this.setActiveComponent(two)
-      }
+      // if (event.key === '2') {
+      //   this.setActiveComponent(two)
+      // }
     }, false);
   }
 
@@ -345,6 +350,7 @@ export class Canvas {
       this.foreground.width = vw;
       this.foreground.height = vw;
     }
+    this.setupGridLines(vw, vh);
   }
 
   onPointerDownForeground(event) {

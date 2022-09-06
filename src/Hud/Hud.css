@@ -7,6 +7,28 @@
   left: 50%;
   border-radius: 6px;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  z-index: initial;
+}
+
+#expander-container {
+  height: 22px;
+}
+
+#expander {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 20px;
+  padding-bottom: 2px;
+}
+
+#expander:hover {
+  background-color: #ecf0f1;
+}
+
+#component-pane-wrapper {
+  z-index: 0;
 }
 
 .component-pane-maximized {
@@ -41,12 +63,31 @@
   }
 }
 
-button {
+#expander {
   background-color: transparent;
   background-repeat: no-repeat;
   border: none;
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  padding-left: 10px;
+}
+
+.component-button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  margin-left: 10px;
+  padding-left: 0px;
+  border-radius: 6px;
+}
+
+.component-button-active {
+  background-color: #dfe4ea;
+}
+
+.component-loader {
+  margin-left: 10px;
 }

@@ -29,7 +29,7 @@ export class Shape {
         if (graphics.shouldCreate) {
             graphics
                 .beginFill(color)
-                .lineStyle(1, 0x2c3e50, 1.0)
+                .lineStyle(1, 0x2c3e50, 0.0)
                 .drawRoundedRect(minX, minY, w, h, cornerRadius)
                 .endFill()
 
@@ -52,7 +52,7 @@ export class Shape {
         if (graphics.shouldCreate) {
             graphics
                 .beginFill(color)
-                .lineStyle(1, 0x2c3e50, 1.0)
+                .lineStyle(1, 0x2c3e50, 0.0)
                 .drawEllipse(center.x, center.y, w / 2, h / 2)
                 .endFill()
 

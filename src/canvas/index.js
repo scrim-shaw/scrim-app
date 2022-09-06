@@ -40,4 +40,10 @@ function updateActiveComponent(component) {
   //canvas.setActiveComponent(JSON.parse(window.atob(component)));
 }
 
+function updateTransparencyMode() {
+  // TODO: would need to remove grid lines as well
+  document.body.style.backgroundColor = "transparent"
+}
+
+window.updateTransparencyMode = updateTransparencyMode;
 window.updateActiveComponent = updateActiveComponent;

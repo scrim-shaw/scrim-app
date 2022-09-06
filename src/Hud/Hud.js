@@ -1,6 +1,11 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
+import { TextField, InputAdornment } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import { ClipLoader } from 'react-spinners';
 
 class Hud extends React.Component {
   constructor(props) {
@@ -12,9 +17,18 @@ class Hud extends React.Component {
         componentPane: "component-pane-minimized"
       },
       components: [],
-      images: []
+      images: [],
+      activeComponent: null
     }
-  } 
+
+    window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
+  }
+
+  activeComponentUpdated(componentId) {
+    this.setState({
+      activeComponent: componentId
+    })
+  }
 
   componentDidMount() {
     this.fetchComponents();
@@ -22,6 +36,7 @@ class Hud extends React.Component {
   
   fetchComponents() {
     getComponents().then(response => {
+      console.log(response.results)
       this.setState({
         components: response.results
       })
@@ -42,10 +57,11 @@ class Hud extends React.Component {
   }
 
   toggleComponentPane() {
+    const componentPaneMaximized = !this.state.componentPaneMaximized
     this.setState({
-      componentPaneMaximized: !this.state.componentPaneMaximized,
+      componentPaneMaximized: componentPaneMaximized,
       classes: {
-        componentPane: this.state.componentPaneMaximized ? "component-pane-minimized-animated" : "component-pane-maximized" // has not been updated yet so logic is flipped
+        componentPane: componentPaneMaximized ? "component-pane-maximized" : "component-pane-minimized-animated" // has not been updated yet so logic is flipped
       }
     })
   }
@@ -61,29 +77,80 @@ class Hud extends React.Component {
     }
   }
 
-  updateComponent(i) {
-    var component = this.state.components[i]
-    var image = this.state.images[component.id]
-    if (image) {
-      component.localUrl = image
-    }
+  updateComponent(id) {
+    var component = this.state.components.find(component => { return component.id === id })
 
-    window.updateActiveComponent(component)
-    this.minimizeComponentPane()
+    if (component) {
+      var image = this.state.images[component.id]
+      if (image) {
+        component.localUrl = image
+      }
+
+      window.updateActiveComponent(component)
+      this.minimizeComponentPane()
+    }
   }
 
   render() {
+    const components = this.state.components.slice(10);
+    const mainComponents = this.state.components.slice(0, 10)
+
     return (
-      <div className={this.state.classes.componentPane} id="component-pane">
-        <button onClick={this.toggleComponentPane.bind(this)}>^</button> <br/>
-        {this.state.components.map((component, i) => {
-          return (
-            <button key={i} onClick={this.updateComponent.bind(this, i)}>
-              {this.state.images[component.id] &&
-                <img key={i} width={55} height={55} src={this.state.images[component.id]}></img>
-              }
-            </button>
-          )
+      <div id="component-pane" className={this.state.classes.componentPane} >
+        <div id="expander-container">
+          <button id="expander" onClick={this.toggleComponentPane.bind(this)}> 
+            {this.state.componentPaneMaximized
+            ? <ArrowDropDownIcon />
+            : <ArrowDropUpIcon />
+            }
+            
+          </button>
+        </div>
+        {mainComponents.map((component, i) => {
+          if (this.state.images[component.id]) {
+            return (
+              <button className={'component-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
+                {this.state.images[component.id] &&
+                  <img key={component.id} width={55} height={55} src={this.state.images[component.id]}></img>
+                }
+              </button>
+            )
+          } else {
+            return (
+              <ClipLoader key={component.id} className="component-loader" loading={true} size={55} ></ClipLoader>
+            )
+          }
+        })}
+        <div>
+          <TextField 
+            sx={{marginLeft: "60px", marginTop: "20px", marginBottom: "20px", width: "calc(100% - 120px)"}} 
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon/>
+                </InputAdornment>
+              )
+            }} 
+            placeholder="Search for components"
+            id="component-search" 
+            variant="outlined" 
+          />
+        </div>
+        {components.map((component, i) => {
+          if (this.state.images[component.id]) {
+            return (
+              <button className={'component-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
+                {this.state.images[component.id] &&
+                  <img key={component.id} width={55} height={55} src={this.state.images[component.id]}></img>
+                }
+              </button>
+            )
+          } else {
+            return (
+              <ClipLoader key={component.id} className="component-loader" loading={true} size={55}></ClipLoader>
+            )
+          }
         })}
       </div>
     );
