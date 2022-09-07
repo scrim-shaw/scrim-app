@@ -55,11 +55,11 @@ class Hud extends React.Component {
   }
   
   fetchComponents() {
-    getComponents().then(response => {
+    getComponents().then(components => {
       this.setState({
-        components: response.results
+        components: components
       })
-      this.fetchImages(response.results)
+      this.fetchImages(components)
     }) 
   }
 

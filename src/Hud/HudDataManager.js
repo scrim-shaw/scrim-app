@@ -1,19 +1,22 @@
 export async function getComponents() {
+    const uri = "https://tuiciahimg.execute-api.us-east-1.amazonaws.com/default/components-get"
+    const apiKey = "jZhWxe0rSs4qG28BR1I3zxceujW5MUEaS3FU65Qj"
+
     var requestOptions = {
         method: 'GET',
         headers: {
-            'x-api-key': 'D735pDPhkb4gdoFw2FpSbaqbJwEi8QHp8IuGmeFo',
+            'x-api-key': apiKey,
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
         },
         redirect: 'follow',
     };
 
-    const response = await fetch("https://ogi9tmnci0.execute-api.us-east-1.amazonaws.com/default/scrimage-components-get", requestOptions)
+    const response = await fetch(uri, requestOptions)
 
-    return await response
-        .json()
-        .then(response => JSON.parse(response.body))
+    return response.json().then(response => {
+        return response.results
+    })
 }
 
 export function fetchImage(imageUrl) {
