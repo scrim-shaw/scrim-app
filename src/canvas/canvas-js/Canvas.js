@@ -17,7 +17,7 @@ export class Canvas {
     this.brushGenerator = new BrushGenerator(app.renderer);
     this.brushTexture = this.brushGenerator.get(0x000000, 1.0, false)
 
-    this.color = 0xFD7272
+    this.color = 0x9b59b6
     this.setupKeyPress();
   }
 

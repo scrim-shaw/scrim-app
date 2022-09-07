@@ -1,11 +1,12 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
-import { TextField, InputAdornment } from '@mui/material';
+import { TextField, InputAdornment, Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
+import { ThirtyFpsOutlined } from '@mui/icons-material';
 
 class Hud extends React.Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class Hud extends React.Component {
       },
       components: [],
       images: [],
-      activeComponent: null
+      activeComponent: null,
+      snackbarOpen: true
     }
 
     window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
@@ -114,11 +116,31 @@ class Hud extends React.Component {
     }
   }
 
+  handleClose(event, reason) {
+    console.log('handle close')
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    this.setState({
+      snackbarOpen: false
+    })
+  };
+
   render() {
     const components = this.state.components.slice(10);
     const mainComponents = this.state.components.slice(0, 10)
 
     return (
+      <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={this.state.snackbarOpen}
+      >
+        <Alert variant="filled" onClose={this.handleClose.bind(this)} severity="info" sx={{ width: '100%' }}>
+          <span id="hint-text">Hint: While dragging a component or two, press the spacebar to duplicate it.</span>
+        </Alert>
+      </Snackbar>
       <div id="component-pane" className={this.state.classes.componentPane} >
         <div id="expander-container">
           <button id="expander" onClick={this.toggleComponentPane.bind(this)}> 
@@ -176,6 +198,7 @@ class Hud extends React.Component {
           }
         })}
       </div>
+      </>
     );
   }
 }
