@@ -4,8 +4,6 @@ import { Canvas } from './canvas-js/Canvas.js'
 let vw = window.innerWidth;
 let vh = window.innerHeight;
 
-console.log('starting pixi canvas')
-
 const app = new Application({
     view: document.querySelector("#view"),
     width: vw,

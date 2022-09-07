@@ -6,7 +6,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
-import ReactGA from "react-ga4";
 
 class Hud extends React.Component {
   constructor(props) {
@@ -23,9 +22,6 @@ class Hud extends React.Component {
     }
 
     window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
-
-    ReactGA.initialize("G-7496DWME29");
-    ReactGA.send("pageview");
   }
 
   activeComponentUpdated(componentId) {
@@ -35,7 +31,27 @@ class Hud extends React.Component {
   }
 
   componentDidMount() {
+    this.setupAnalytics();
     this.fetchComponents();
+  }
+
+  setupAnalytics() {
+    const script = document.createElement("script");
+
+    script.src = "https://www.googletagmanager.com/gtag/js?id=G-7496DWME29";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    
+    this.gtag('js', new Date());
+
+    this.gtag('config', 'G-7496DWME29', { 'debug_mode': true });
+  }
+  
+  gtag(){
+    window.dataLayer.push(arguments);
   }
   
   fetchComponents() {
@@ -45,7 +61,6 @@ class Hud extends React.Component {
       })
       this.fetchImages(response.results)
     }) 
-    
   }
 
   fetchImages(components) {
@@ -83,9 +98,9 @@ class Hud extends React.Component {
   updateComponent(id) {
     var component = this.state.components.find(component => { return component.id === id })
 
-    ReactGA.event("clicked_component", {
-      componentId: component.id,
-      componentName: component.name
+    this.gtag('event', 'clicked_component', {
+      'componentId': component.id,
+      'componentName': component.name
     });
 
     if (component) {
