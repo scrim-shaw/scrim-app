@@ -47,7 +47,7 @@ class Hud extends React.Component {
     
     this.gtag('js', new Date());
 
-    this.gtag('config', 'G-7496DWME29', { 'debug_mode': true });
+    this.gtag('config', 'G-7496DWME29');
   }
   
   gtag(){
