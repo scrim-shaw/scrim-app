@@ -1,7 +1,7 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
-import { TextField, InputAdornment, Snackbar, Alert } from '@mui/material';
+import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -20,7 +20,8 @@ class Hud extends React.Component {
       components: [],
       images: [],
       activeComponent: null,
-      snackbarOpen: true
+      snackbarOpen: true,
+      backdropLoaderOpen: true
     }
 
     window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
@@ -59,7 +60,8 @@ class Hud extends React.Component {
   fetchComponents() {
     getComponents().then(components => {
       this.setState({
-        components: components
+        components: components, 
+        backdropLoaderOpen: false
       })
       this.fetchImages(components)
     }) 
@@ -198,6 +200,11 @@ class Hud extends React.Component {
           }
         })}
       </div>
+      <Backdrop
+          open={this.state.backdropLoaderOpen}
+        >
+        <CircularProgress />
+      </Backdrop>
       </>
     );
   }
