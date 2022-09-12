@@ -91,14 +91,14 @@ export class Shape {
         const dx2 = l * Math.sin(theta5)
         const dy2 = l * Math.cos(theta5)
 
-        var arrowEnd1: Point;
+        var arrowEnd1;
         if (currentCursorPosition.y >= initialCursorPosition.y) {
             arrowEnd1 = new Point(currentCursorPosition.x + dx1 , currentCursorPosition.y - dy1)
         } else {
             arrowEnd1 = new Point(currentCursorPosition.x - dx1 , currentCursorPosition.y + dy1)
         }
 
-        var arrowEnd2: Point;
+        var arrowEnd2;
         if (currentCursorPosition.y >= initialCursorPosition.y) {
             arrowEnd2 = new Point(currentCursorPosition.x - dx2 , currentCursorPosition.y + dy2)
         } else {

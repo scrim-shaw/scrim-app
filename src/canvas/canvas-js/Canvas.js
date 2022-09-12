@@ -1,5 +1,5 @@
 
-import { Shape, intersects, distance } from './Shape.ts';
+import { Shape, intersects, distance } from './Shape.js';
 import { BrushGenerator, Brush } from './BrushGenerator.js';
 import { Sprite, Point, Container } from 'pixi.js';
 import { SmoothGraphics as Graphics } from '@pixi/graphics-smooth';
