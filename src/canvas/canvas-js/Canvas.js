@@ -1,5 +1,5 @@
 
-import { Shape, intersects, distance } from './Shape.js';
+import { Shape, intersects, distance } from './Shape.ts';
 import { BrushGenerator, Brush } from './BrushGenerator.js';
 import { Sprite, Point, Container } from 'pixi.js';
 import { SmoothGraphics as Graphics } from '@pixi/graphics-smooth';
@@ -156,12 +156,7 @@ export class Canvas {
     component.l = new Point(x-(component.width/2), y-(component.height/2))
     component.r = new Point(x+(component.width/2), y+(component.height/2))
 
-    //component.hitArea = new PIXI.Polygon(points);
-    //component.shape = new CollisionShape(component/*, points*/);
-    //component.collisionID = 1;
-    //component.collision = COLLISION.NONE;
     component.canvas = this;
-    //component.tint = component.collision;
     component.selected = false;
     component.componentData = structuredClone(componentData);
 
@@ -490,13 +485,39 @@ export class Canvas {
   update() {
     this.componentBox
       .clear()
-      .lineStyle(2, Number("0x" + "3498db"), 1.0)
+      .lineStyle(1, Number("0x" + "3498db"), 1.0)
+
+    var minX = Number.MAX_VALUE; var minY = Number.MAX_VALUE; var maxX = Number.MIN_VALUE; var maxY = Number.MIN_VALUE;
 
     for (let i = 0; i < this.components.length; i++) {
       const component = this.components[i];
       if (component.selected) {
-        this.componentBox.drawRect(component.x - (component.width * 0.5), component.y - (component.height * 0.5), component.width, component.height);
+        const x = component.x - (component.width * 0.5)
+        const y = component.y - (component.height * 0.5)
+
+        const x2 = component.x + (component.width * 0.5)
+        const y2 = component.y + (component.height * 0.5)
+
+        minX = Math.min(minX, x)
+        minY = Math.min(minY, y)
+
+        maxX = Math.max(maxX, x2)
+        maxY = Math.max(maxY, y2)
+
+        // add a box to each individual component
+        //this.componentBox.drawRect(component.x - (component.width * 0.5), component.y - (component.height * 0.5), component.width, component.height);
       }
     }
+
+    // if (!this.resizeBox) {
+    //   const component = {type: "shape", name: "Rectangle"}
+    //   const boxGraphics = new Graphics()
+    //   boxGraphics.drawRect()
+    //   this.resizeBox = this.createComponent(maxX, maxY, component, , )
+    // }
+
+    this.componentBox
+    .lineStyle(2, Number("0x" + "3498db"), 1.0)
+    .drawRect(minX, minY, maxX-minX, maxY-minY)
   }
 }

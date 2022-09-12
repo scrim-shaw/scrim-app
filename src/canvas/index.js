@@ -1,5 +1,8 @@
 import { Application } from '@pixi/app'
 import { Canvas } from './canvas-js/Canvas.js'
+import { utils } from 'pixi.js'
+
+utils.skipHello();
 
 let vw = window.innerWidth;
 let vh = window.innerHeight;

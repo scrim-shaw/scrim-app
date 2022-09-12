@@ -6,7 +6,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
-import { ThirtyFpsOutlined } from '@mui/icons-material';
 
 class Hud extends React.Component {
   constructor(props) {
@@ -119,7 +118,6 @@ class Hud extends React.Component {
   }
 
   handleClose(event, reason) {
-    console.log('handle close')
     if (reason === 'clickaway') {
       return;
     }
