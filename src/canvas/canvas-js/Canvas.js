@@ -3,6 +3,7 @@ import { Shape, intersects, distance } from './Shape.js';
 import { BrushGenerator, Brush } from './BrushGenerator.js';
 import { Sprite, Point, Container } from 'pixi.js';
 import { SmoothGraphics as Graphics } from '@pixi/graphics-smooth';
+import { ComponentBox } from './ComponentBox.js';
 
 export class Canvas {
   constructor(app, vw, vh) {
@@ -28,13 +29,24 @@ export class Canvas {
     this.setupBackground(this.vw, this.vh);
     this.setupHighlighter();
 
-    this.componentBox = new Graphics();
-    this.container.addChild(this.componentBox);
+    this.componentBox = new ComponentBox(this.resizeBy.bind(this));
 
     this.drawBuffer = new Container();
     this.container.addChild(this.drawBuffer);
 
     return this.container;
+  }
+
+  resizeBy(dx, dy) {
+    for (let i = 0; i < this.components.length; i++) {
+      var component = this.components[i];
+      if (component.selected) {
+        component.x = component.x + dx/2
+        component.y = component.y + dy/2
+        component.width = component.width + dx;
+        component.height = component.height + dy;
+      }
+    }
   }
 
   setActiveComponent(activeComponent) {
@@ -121,7 +133,7 @@ export class Canvas {
     this.container.addChild(this.background);
   }
 
-  createComponent(x, y, componentData, graphics = null, texture = null) {
+  createComponent(x, y, componentData, graphics = null, texture = null, width = null, height = null) {
     var component;
     var newTexture = null;
     if (componentData.type === 'shape') {
@@ -152,6 +164,8 @@ export class Canvas {
 
     component.x = x;
     component.y = y;
+    if (width) { component.width = width; }
+    if (height) { component.height = height; }
     component.anchor.set(0.5, 0.5);
     component.l = new Point(x-(component.width/2), y-(component.height/2))
     component.r = new Point(x+(component.width/2), y+(component.height/2))
@@ -187,8 +201,8 @@ export class Canvas {
       this.setComponentFocus(component)
     }
 
-    this.container.removeChild(this.componentBox);
-    this.container.addChild(this.componentBox);
+    this.container.removeChild(this.componentBox.getBox())
+    this.container.addChild(this.componentBox.getBox())
   }
 
   highlight(lh, rh) {
@@ -216,8 +230,8 @@ export class Canvas {
       }
     })
 
-    this.container.removeChild(this.componentBox);
-    this.container.addChild(this.componentBox);
+    this.container.removeChild(this.componentBox.getBox())
+    this.container.addChild(this.componentBox.getBox())
   }
 
   onPointerDownComponent(event) {
@@ -268,11 +282,14 @@ export class Canvas {
       if (event.key === ' ') {
         this.components.forEach((component) => {
           if (component.selected) {
-            const newComponent = this.createComponent(component.x, component.y, component.componentData, null, component.textureRef);
+            const newComponent = this.createComponent(component.x, component.y, component.componentData, null, component.textureRef, component.width, component.height);
             this.addComponent(newComponent, false);
 
             this.container.removeChild(component);
             this.container.addChild(component);
+
+            this.container.removeChild(this.componentBox.getBox());
+            this.container.addChild(this.componentBox.getBox())
           }
         })
       }
@@ -483,41 +500,6 @@ export class Canvas {
   }
 
   update() {
-    this.componentBox
-      .clear()
-      .lineStyle(1, Number("0x" + "3498db"), 1.0)
-
-    var minX = Number.MAX_VALUE; var minY = Number.MAX_VALUE; var maxX = Number.MIN_VALUE; var maxY = Number.MIN_VALUE;
-
-    for (let i = 0; i < this.components.length; i++) {
-      const component = this.components[i];
-      if (component.selected) {
-        const x = component.x - (component.width * 0.5)
-        const y = component.y - (component.height * 0.5)
-
-        const x2 = component.x + (component.width * 0.5)
-        const y2 = component.y + (component.height * 0.5)
-
-        minX = Math.min(minX, x)
-        minY = Math.min(minY, y)
-
-        maxX = Math.max(maxX, x2)
-        maxY = Math.max(maxY, y2)
-
-        // add a box to each individual component
-        //this.componentBox.drawRect(component.x - (component.width * 0.5), component.y - (component.height * 0.5), component.width, component.height);
-      }
-    }
-
-    // if (!this.resizeBox) {
-    //   const component = {type: "shape", name: "Rectangle"}
-    //   const boxGraphics = new Graphics()
-    //   boxGraphics.drawRect()
-    //   this.resizeBox = this.createComponent(maxX, maxY, component, , )
-    // }
-
-    this.componentBox
-    .lineStyle(2, Number("0x" + "3498db"), 1.0)
-    .drawRect(minX, minY, maxX-minX, maxY-minY)
+    this.componentBox.update(this.components);
   }
 }
