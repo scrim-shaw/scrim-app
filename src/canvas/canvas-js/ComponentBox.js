@@ -186,8 +186,6 @@ export class ComponentBox {
                 this.removeAllChildren();
             }
         }
-
-        return this.components
     }
 
     onPointerDownForeground(event) {
