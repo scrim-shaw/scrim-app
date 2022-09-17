@@ -29,24 +29,12 @@ export class Canvas {
     this.setupBackground(this.vw, this.vh);
     this.setupHighlighter();
 
-    this.componentBox = new ComponentBox(this.resizeBy.bind(this));
+    this.componentBox = new ComponentBox();
 
     this.drawBuffer = new Container();
     this.container.addChild(this.drawBuffer);
 
     return this.container;
-  }
-
-  resizeBy(dx, dy) {
-    for (let i = 0; i < this.components.length; i++) {
-      var component = this.components[i];
-      if (component.selected) {
-        component.x = component.x + dx/2
-        component.y = component.y + dy/2
-        component.width = component.width + dx;
-        component.height = component.height + dy;
-      }
-    }
   }
 
   setActiveComponent(activeComponent) {
@@ -247,11 +235,6 @@ export class Canvas {
   onPointerMoveComponent(event) {
     if (this.dragging) {
       const newPosition = this.dragData.getLocalPosition(this.parent, this.newPosition);
-      // this.position.x += (newPosition.x - this.lastPosition.x);
-      // this.position.y += (newPosition.y - this.lastPosition.y);
-      // this.l = new Point(this.x-(this.width/2), this.y-(this.height/2))
-      // this.r = new Point(this.x+(this.width/2), this.y+(this.height/2))
-
       this.canvas.components.forEach((component) => {
         if (component.selected) {
           component.position.x += (newPosition.x - this.lastPosition.x);

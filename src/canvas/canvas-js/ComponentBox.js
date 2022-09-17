@@ -1,7 +1,7 @@
 import { Point, Container, Graphics, Circle } from 'pixi.js';
 
 export class ComponentBox {
-    constructor(resizeCallback) {
+    constructor() {
         /*
         p1------------p2
         |             |
@@ -10,6 +10,8 @@ export class ComponentBox {
         |             |
         p3------------p4
         */
+
+        // TODO: there is a lot of point specific code here. check to see if it can be made generic
 
         this.container = new Container();
         this.boxGraphics = new Graphics();
@@ -23,13 +25,29 @@ export class ComponentBox {
 
         this.addAllChildren();
 
-        this.p4
+        this.p1
             .on("pointerdown", this.onPointerDownForeground)
             .on("pointermove", this.onPointerMoveForeground)
             .on("pointerup", this.onPointerUpForeground)
             .on("pointerupoutside", this.onPointerUpForeground);
 
-        this.p4.resizeCallback = resizeCallback;
+        this.p2
+            .on("pointerdown", this.onPointerDownForeground)
+            .on("pointermove", this.onPointerMoveForeground)
+            .on("pointerup", this.onPointerUpForeground)
+            .on("pointerupoutside", this.onPointerUpForeground);
+
+        this.p3
+            .on("pointerdown", this.onPointerDownForeground)
+            .on("pointermove", this.onPointerMoveForeground)
+            .on("pointerup", this.onPointerUpForeground)
+            .on("pointerupoutside", this.onPointerUpForeground);
+
+        this.p4
+            .on("pointerdown", this.onPointerDownForeground)
+            .on("pointermove", this.onPointerMoveForeground)
+            .on("pointerup", this.onPointerUpForeground)
+            .on("pointerupoutside", this.onPointerUpForeground);
 
         this.color =  Number("0x" + "3498db")
     }
@@ -58,7 +76,66 @@ export class ComponentBox {
         return this.container;
     }
 
+    setupPoints() {
+        this.p1
+            .clear()
+            .lineStyle(2, this.color, 1.0)
+            .beginFill(0xFFFFFF)
+            .drawCircle(this.dim.minX, this.dim.minY, 6.0)
+            .endFill()
+    
+        var p1Hitarea = new Circle(this.dim.minX, this.dim.minY, 6.0);
+        this.p1.hitArea = p1Hitarea
+        this.p1.interactive = true;
+        this.p1.buttonMode = true;
+        this.p1.box = this
+        this.p1.point = "p1"
+
+        this.p2
+            .clear()
+            .lineStyle(2, this.color, 1.0)
+            .beginFill(0xFFFFFF)
+            .drawCircle(this.dim.maxX, this.dim.minY, 6.0)
+            .endFill()
+
+        var p2Hitarea = new Circle(this.dim.maxX, this.dim.minY, 6.0);
+        this.p2.hitArea = p2Hitarea
+        this.p2.interactive = true;
+        this.p2.buttonMode = true;
+        this.p2.box = this
+        this.p2.point = "p2"
+        
+        this.p3
+            .clear()
+            .lineStyle(2, this.color, 1.0)
+            .beginFill(0xFFFFFF)
+            .drawCircle(this.dim.minX, this.dim.maxY, 6.0)
+            .endFill()
+
+        var p3Hitarea = new Circle(this.dim.minX, this.dim.maxY, 6.0);
+        this.p3.hitArea = p3Hitarea
+        this.p3.interactive = true;
+        this.p3.buttonMode = true;
+        this.p3.box = this
+        this.p3.point = "p3"
+        
+        this.p4
+            .clear()
+            .lineStyle(2, this.color, 1.0)
+            .beginFill(0xFFFFFF)
+            .drawCircle(this.dim.maxX, this.dim.maxY, 6.0)
+            .endFill()
+
+        var p4Hitarea = new Circle(this.dim.maxX, this.dim.maxY, 6.0);
+        this.p4.hitArea = p4Hitarea
+        this.p4.interactive = true;
+        this.p4.buttonMode = true;
+        this.p4.box = this
+        this.p4.point = "p4"
+    }
+
     update(components) {
+        this.components = components
         this.boxGraphics
         .clear()
         .lineStyle(1, this.color, 1.0)
@@ -84,52 +161,22 @@ export class ComponentBox {
                 maxY = Math.max(maxY, y2)
 
                 // add a box to each individual component
-                //this.componentBox.drawRect(component.x - (component.width * 0.5), component.y - (component.height * 0.5), component.width, component.height);
+                if (shouldDraw) {
+                    this.boxGraphics.drawRect(component.x - (component.width * 0.5), component.y - (component.height * 0.5), component.width, component.height);
+                }
             }
+        }
+
+        this.dim = {
+            minX: minX,
+            minY: minY,
+            maxX: maxX,
+            maxY: maxY
         }
 
         if (shouldDraw) {
             this.addAllChildren();
-            this.p1
-                .clear()
-                .lineStyle(2, this.color, 1.0)
-                .beginFill(0xFFFFFF)
-                // .beginFill(this.color)
-                // .drawRect(minX-6, minY-6, 12, 12)
-                .drawCircle(minX, minY, 6.0)
-                .endFill()
-
-            this.p2
-                .clear()
-                .lineStyle(2, this.color, 1.0)
-                .beginFill(0xFFFFFF)
-                // .beginFill(this.color)
-                // .drawRect(minX-6, minY-6, 12, 12)
-                .drawCircle(maxX, minY, 6.0)
-                .endFill()
-            
-            this.p3
-                .clear()
-                .lineStyle(2, this.color, 1.0)
-                .beginFill(0xFFFFFF)
-                // .beginFill(this.color)
-                // .drawRect(minX-6, minY-6, 12, 12)
-                .drawCircle(minX, maxY, 6.0)
-                .endFill()
-            
-            this.p4
-                .clear()
-                .lineStyle(2, this.color, 1.0)
-                .beginFill(0xFFFFFF)
-                // .beginFill(this.color)
-                // .drawRect(minX-6, minY-6, 12, 12)
-                .drawCircle(maxX, maxY, 6.0)
-                .endFill()
-
-            var hitarea = new Circle(maxX, maxY, 6.0);
-            this.p4.hitArea = hitarea
-            this.p4.interactive = true;
-            this.p4.buttonMode = true;
+            this.setupPoints();
 
             this.boxGraphics
                 .lineStyle(2, this.color, 1.0)
@@ -139,28 +186,164 @@ export class ComponentBox {
                 this.removeAllChildren();
             }
         }
+
+        return this.components
     }
 
     onPointerDownForeground(event) {
         this.dragging = true;
         this.dragData = event.data;
         this.latestPosition = this.dragData.getLocalPosition(this.parent, this.initialPosition);
+        this.boxDim = this.box.dim
+        this.box.startResizing();
     }
 
     onPointerMoveForeground(event) {
         if (this.dragging) {
             const newPosition = this.dragData.getLocalPosition(this.parent, this.newPosition);
-            const dx = newPosition.x - this.latestPosition.x
-            const dy = newPosition.y - this.latestPosition.y
+            const scaledDim = this.box.getScaledDim(this.point, this.boxDim, newPosition)
+
+            const scale = this.box.findScale(this.boxDim, scaledDim)
+            this.box.resize(this.point, this.boxDim, scale.scaleX, scale.scaleY)
 
             this.latestPosition = newPosition;
-
-            this.resizeCallback(dx, dy)
         }
     }
 
     onPointerUpForeground() {
         this.dragging = false;
+        this.box.finishResizing();
+    }
+
+    findScale(initialDim, scaledDim) {
+        const scaleX = (scaledDim.maxX - scaledDim.minX) / (initialDim.maxX - initialDim.minX)
+        const scaleY = (scaledDim.maxY - scaledDim.minY) / (initialDim.maxY - initialDim.minY)
+
+        return {scaleX: scaleX, scaleY: scaleY}
+    }
+
+    startResizing() {
+        for (let i = 0; i < this.components.length; i++) {
+            var component = this.components[i];
+            if (component.selected) {
+                component.startingDim = {
+                    x: component.x,
+                    y: component.y,
+                    width: component.width,
+                    height: component.height
+                }
+            }
+        }
+    }
+
+    resize(point, boxDim, scaleX, scaleY) {
+        for (let i = 0; i < this.components.length; i++) {
+            var component = this.components[i];
+            if (component.selected) {
+                var updateX = () => {};
+                var updateY = () => {};
+                var updateWidth = () => {
+                    const newWidth = component.startingDim.width * scaleX;
+                    component.width = newWidth
+                }
+                var updateHeight = () => {
+                    const newHeight = component.startingDim.height * scaleY;
+                    component.height = newHeight
+                }
+
+                if (point === 'p1') {
+                    updateX = () => {
+                        const dx = (boxDim.maxX - component.startingDim.x) * scaleX
+                        component.x = boxDim.maxX - dx
+                    }
+                    updateY = () => {
+                        const dy = (boxDim.maxY - component.startingDim.y) * scaleY
+                        component.y = boxDim.maxY - dy
+                    }
+                } else if (point == 'p2') {
+                    updateX = () => {
+                        const dx = (component.startingDim.x - boxDim.minX) * scaleX
+                        component.x = boxDim.minX + dx
+                    }
+                    updateY = () => {
+                        const dy = (boxDim.maxY - component.startingDim.y) * scaleY
+                        component.y = boxDim.maxY - dy
+                    }
+
+                } else if (point === 'p3') {
+                    updateX = () => {
+                        const dx = (boxDim.maxX - component.startingDim.x) * scaleX
+                        component.x = boxDim.maxX - dx
+                    }
+                    updateY = () => {
+                        const dy = (component.startingDim.y - boxDim.minY) * scaleY
+                        component.y = boxDim.minY + dy
+                    }
+                } else if (point === 'p4') {
+                    updateX = () => {
+                        const dx = (component.startingDim.x - boxDim.minX) * scaleX
+                        component.x = boxDim.minX + dx
+                    }
+
+                    updateY = () => {
+                        const dy = (component.startingDim.y - boxDim.minY) * scaleY
+                        component.y = boxDim.minY + dy
+                    }
+                }
+
+                // TODO: this shouldn't be based on scale but the resulting width
+                if (scaleX > 0.01) {
+                    updateX();
+                    updateWidth();
+                    component.l = new Point(component.x-(component.width/2), component.y-(component.height/2))
+                }
+                if (scaleY > 0.01) {
+                    updateY();
+                    updateHeight();
+                    component.r = new Point(component.x+(component.width/2), component.y+(component.height/2))
+                }
+            }
+        }
+    }
+
+    finishResizing() {
+        for (let i = 0; i < this.components.length; i++) {
+            var component = this.components[i];
+            delete component.initialSize
+        }
+    }
+
+    getScaledDim(point, boxDim, newPosition) {
+        switch (point) {
+            case "p1":
+                return ({
+                    minX: newPosition.x,
+                    minY: newPosition.y,
+                    maxX: boxDim.maxX,
+                    maxY: boxDim.maxY
+                })
+            case "p2":
+                return ({
+                    minX: boxDim.minX,
+                    minY: newPosition.y,
+                    maxX: newPosition.x,
+                    maxY: boxDim.maxY
+                })
+            case "p3":
+                return ({
+                    minX: newPosition.x,
+                    minY: boxDim.minY,
+                    maxX: boxDim.maxX,
+                    maxY: newPosition.y
+                })
+            case "p4":
+                return ({
+                    minX: boxDim.minX,
+                    minY: boxDim.minY,
+                    maxX: newPosition.x,
+                    maxY: newPosition.y
+                })
+        }
     }
 }
 
