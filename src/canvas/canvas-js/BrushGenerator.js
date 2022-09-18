@@ -71,10 +71,10 @@ export class Brush {
 
         if (disappear) {
             sprite.disappear = function(){
-                sprite.parent.removeChild(sprite);
+                if (sprite.parent) {
+                    sprite.parent.removeChild(sprite);
+                }
             };
-
-            setTimeout(sprite.disappear,1000);
         }
 
         if (false/*guiParams.useEraser*/) {

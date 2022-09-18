@@ -439,6 +439,12 @@ export class Canvas {
 
         var newComponent = this.canvas.createComponent(x, y, this.canvas.activeComponent, null, drawTexture)
         this.canvas.addComponent(newComponent, false);
+      } else {
+        this.canvas.drawBuffer.children.forEach((sprite, i) => {
+          if (sprite.disappear) {
+            setTimeout(sprite.disappear,1000+((i+1)*0.1));
+          }
+        })
       }
       this.canvas.setActiveComponent(this.canvas.activeComponent);
     }
