@@ -51,6 +51,13 @@ export class Canvas {
     window.activeComponentUpdated(componentId)
   }
 
+  clear() {
+    this.components.forEach(component => {
+      component.parent.removeChild(component);
+    })
+    this.components = []
+  }
+
   setActiveTool(activeTool) {
     this.activeTool = activeTool;
   }

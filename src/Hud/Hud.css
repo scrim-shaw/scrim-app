@@ -67,6 +67,10 @@
   }
 }
 
+#convenience-buttons {
+  margin: 20px;
+}
+
 #expander {
   background-color: transparent;
   background-repeat: no-repeat;

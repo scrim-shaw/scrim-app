@@ -1,8 +1,9 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
-import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress } from '@mui/material';
+import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
@@ -117,6 +118,10 @@ class Hud extends React.Component {
     }
   }
 
+  clearCanvas() {
+    window.clearCanvas();
+  }
+
   handleClose(event, reason) {
     if (reason === 'clickaway') {
       return;
@@ -141,6 +146,11 @@ class Hud extends React.Component {
           <span id="hint-text">Hint: While dragging a component or two, press the spacebar to duplicate it.</span>
         </Alert>
       </Snackbar>
+      <div id="convenience-buttons">
+      <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="large">
+        <DeleteIcon fontSize="inherit" />
+      </IconButton>
+      </div>
       <div id="component-pane" className={this.state.classes.componentPane} >
         <div id="expander-container">
           <button id="expander" onClick={this.toggleComponentPane.bind(this)}> 

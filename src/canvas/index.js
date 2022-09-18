@@ -46,5 +46,10 @@ function updateTransparencyMode() {
   document.body.style.backgroundColor = "transparent"
 }
 
+function clearCanvas() {
+  canvas.clear();
+}
+
 window.updateTransparencyMode = updateTransparencyMode;
 window.updateActiveComponent = updateActiveComponent;
+window.clearCanvas = clearCanvas;
