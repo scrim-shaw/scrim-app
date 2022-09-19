@@ -207,11 +207,13 @@ class Hud extends React.Component {
         {this.state.tools.map((component, i) => {
           if (this.state.images[component.id]) {
             return (
-              <button className={'tool-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
-                {this.state.images[component.id] &&
-                  <img key={component.id} width={35} height={35} src={this.state.images[component.id]}></img>
-                }
-              </button>
+              <Tooltip title={component.name} placement="right">
+                <button className={'tool-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
+                  {this.state.images[component.id] &&
+                    <img key={component.id} width={35} height={35} src={this.state.images[component.id]}></img>
+                  }
+                </button>
+              </Tooltip>
             )
           } else {
             return (
