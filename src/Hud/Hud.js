@@ -1,12 +1,19 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
-import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton } from '@mui/material';
+import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, Typography, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
+
+const ColorButton = styled(Button)(({ activecolor }) => ({
+  backgroundColor: activecolor,
+  '&:hover': {
+    backgroundColor: activecolor,
+  },
+}));
 
 class Hud extends React.Component {
   constructor(props) {
@@ -21,7 +28,9 @@ class Hud extends React.Component {
       images: [],
       activeComponent: null,
       snackbarOpen: true,
-      backdropLoaderOpen: true
+      backdropLoaderOpen: true,
+      colorSelectOpen: false,
+      color: "#3498db"
     }
 
     window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
@@ -36,6 +45,8 @@ class Hud extends React.Component {
   componentDidMount() {
     this.setupAnalytics();
     this.fetchComponents();
+
+    this.selectColor("#3498db")
   }
 
   setupAnalytics() {
@@ -132,6 +143,23 @@ class Hud extends React.Component {
     })
   };
 
+  openColorSelect() {
+    this.setState({
+      colorSelectOpen: true
+    })
+  }
+
+  selectColor(color) {
+    const colorNum = parseInt(color.replace(/^#/, ''), 16)
+    window.updateParams({
+      color: colorNum
+    })
+    this.setState({
+      colorSelectOpen: false,
+      color: color
+    })
+  }
+
   render() {
     const components = this.state.components.slice(10);
     const mainComponents = this.state.components.slice(0, 10)
@@ -147,9 +175,26 @@ class Hud extends React.Component {
         </Alert>
       </Snackbar>
       <div id="convenience-buttons">
-      <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="large">
-        <DeleteIcon fontSize="inherit" />
-      </IconButton>
+      <ButtonGroup variant="contained">
+        <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="medium">
+          <DeleteIcon fontSize="inherit" />
+        </IconButton>
+        <Tooltip open={this.state.colorSelectOpen} title={
+          <React.Fragment>
+            <ButtonGroup variant="contained">
+              <ColorButton onClick={this.selectColor.bind(this, "#3498db")} activecolor="#3498db"><p></p></ColorButton>
+              <ColorButton onClick={this.selectColor.bind(this, "#9b59b6")} activecolor="#9b59b6"><p></p></ColorButton>
+              <ColorButton onClick={this.selectColor.bind(this, "#2ecc71")} activecolor="#2ecc71"><p></p></ColorButton>
+              <ColorButton onClick={this.selectColor.bind(this, "#e67e22")} activecolor="#e67e22"><p></p></ColorButton>
+              <ColorButton onClick={this.selectColor.bind(this, "#e74c3c")} activecolor="#e74c3c"><p></p></ColorButton>
+              <ColorButton onClick={this.selectColor.bind(this, "#f1c40f")} activecolor="#f1c40f"><p></p></ColorButton>
+            </ButtonGroup>
+          </React.Fragment>
+        }>
+          <ColorButton onClick={this.openColorSelect.bind(this)} activecolor={this.state.color}></ColorButton>
+        </Tooltip>
+      </ButtonGroup>
+      
       </div>
       <div id="component-pane" className={this.state.classes.componentPane} >
         <div id="expander-container">

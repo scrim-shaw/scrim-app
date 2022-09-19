@@ -1,5 +1,6 @@
 export async function getComponents() {
-    const uri = "https://tuiciahimg.execute-api.us-east-1.amazonaws.com/default/components-get"
+    // const uri = "https://tuiciahimg.execute-api.us-east-1.amazonaws.com/default/components-get"
+    const uri = "https://b4d9c732-e216-490b-baef-276ff515e212.mock.pstmn.io/default/components-get" // mock
     const apiKey = "jZhWxe0rSs4qG28BR1I3zxceujW5MUEaS3FU65Qj"
 
     var requestOptions = {

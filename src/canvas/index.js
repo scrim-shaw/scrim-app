@@ -50,6 +50,11 @@ function clearCanvas() {
   canvas.clear();
 }
 
+function updateParams(params) {
+  canvas.color = params.color;
+}
+
 window.updateTransparencyMode = updateTransparencyMode;
 window.updateActiveComponent = updateActiveComponent;
 window.clearCanvas = clearCanvas;
+window.updateParams = updateParams;
