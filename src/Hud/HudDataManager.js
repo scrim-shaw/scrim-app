@@ -15,8 +15,30 @@ export async function getComponents() {
 
     const response = await fetch(uri, requestOptions)
 
-    return response.json().then(response => {
-        return response.results
+    // return response.json()
+    // .then(response => { return response.results})
+
+    return response.json()
+        .then(response => response.results)
+        .then(results => {
+        var i = 0;
+        for (i=0; i<results.length; i++) {
+            const result = results[i]
+            if (result.tool !== true) {
+                break;
+            }
+        }
+
+        const tools = results.slice(0, i)
+        const mainComponents = results.slice(i, i+10)
+        const components = results.slice(i+10);
+
+        return {
+            allResults: results,
+            tools: tools,
+            mainComponents: mainComponents,
+            miscComponents: components
+        }
     })
 }
 

@@ -2,6 +2,7 @@ import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
 import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, Typography, styled } from '@mui/material';
+import { ClickAwayListener } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -25,6 +26,9 @@ class Hud extends React.Component {
         componentPane: "component-pane-minimized"
       },
       components: [],
+      tools: [],
+      mainComponents: [],
+      miscComponents: [],
       images: [],
       activeComponent: null,
       snackbarOpen: true,
@@ -71,10 +75,13 @@ class Hud extends React.Component {
   fetchComponents() {
     getComponents().then(components => {
       this.setState({
-        components: components, 
+        components: components.allResults,
+        tools: components.tools, 
+        mainComponents: components.mainComponents,
+        miscComponents: components.miscComponents,
         backdropLoaderOpen: false
       })
-      this.fetchImages(components)
+      this.fetchImages(components.allResults)
     }) 
   }
 
@@ -150,6 +157,7 @@ class Hud extends React.Component {
   }
 
   selectColor(color) {
+    if (color === null) {color = this.state.color}
     const colorNum = parseInt(color.replace(/^#/, ''), 16)
     window.updateParams({
       color: colorNum
@@ -161,9 +169,6 @@ class Hud extends React.Component {
   }
 
   render() {
-    const components = this.state.components.slice(10);
-    const mainComponents = this.state.components.slice(0, 10)
-
     return (
       <>
       <Snackbar
@@ -179,22 +184,41 @@ class Hud extends React.Component {
         <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="medium">
           <DeleteIcon fontSize="inherit" />
         </IconButton>
-        <Tooltip open={this.state.colorSelectOpen} title={
-          <React.Fragment>
-            <ButtonGroup variant="contained">
-              <ColorButton onClick={this.selectColor.bind(this, "#3498db")} activecolor="#3498db"><p></p></ColorButton>
-              <ColorButton onClick={this.selectColor.bind(this, "#9b59b6")} activecolor="#9b59b6"><p></p></ColorButton>
-              <ColorButton onClick={this.selectColor.bind(this, "#2ecc71")} activecolor="#2ecc71"><p></p></ColorButton>
-              <ColorButton onClick={this.selectColor.bind(this, "#e67e22")} activecolor="#e67e22"><p></p></ColorButton>
-              <ColorButton onClick={this.selectColor.bind(this, "#e74c3c")} activecolor="#e74c3c"><p></p></ColorButton>
-              <ColorButton onClick={this.selectColor.bind(this, "#f1c40f")} activecolor="#f1c40f"><p></p></ColorButton>
-            </ButtonGroup>
-          </React.Fragment>
-        }>
-          <ColorButton onClick={this.openColorSelect.bind(this)} activecolor={this.state.color}></ColorButton>
-        </Tooltip>
+        <ClickAwayListener onClickAway={this.selectColor.bind(this, null)}>
+          <Tooltip open={this.state.colorSelectOpen} title={
+            <React.Fragment>
+              <ButtonGroup variant="contained">
+                <ColorButton onClick={this.selectColor.bind(this, "#3498db")} activecolor="#3498db"><p></p></ColorButton>
+                <ColorButton onClick={this.selectColor.bind(this, "#9b59b6")} activecolor="#9b59b6"><p></p></ColorButton>
+                <ColorButton onClick={this.selectColor.bind(this, "#2ecc71")} activecolor="#2ecc71"><p></p></ColorButton>
+                <ColorButton onClick={this.selectColor.bind(this, "#e67e22")} activecolor="#e67e22"><p></p></ColorButton>
+                <ColorButton onClick={this.selectColor.bind(this, "#e74c3c")} activecolor="#e74c3c"><p></p></ColorButton>
+                <ColorButton onClick={this.selectColor.bind(this, "#f1c40f")} activecolor="#f1c40f"><p></p></ColorButton>
+              </ButtonGroup>
+            </React.Fragment>
+          }>
+            <ColorButton onClick={this.openColorSelect.bind(this)} activecolor={this.state.color}></ColorButton>
+          </Tooltip>
+        </ClickAwayListener>
       </ButtonGroup>
       
+      </div>
+      <div id="tool-pane">
+        {this.state.tools.map((component, i) => {
+          if (this.state.images[component.id]) {
+            return (
+              <button className={'tool-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
+                {this.state.images[component.id] &&
+                  <img key={component.id} width={35} height={35} src={this.state.images[component.id]}></img>
+                }
+              </button>
+            )
+          } else {
+            return (
+              <ClipLoader key={component.id} className="component-loader" loading={true} size={55}></ClipLoader>
+            )
+          }
+        })}
       </div>
       <div id="component-pane" className={this.state.classes.componentPane} >
         <div id="expander-container">
@@ -206,7 +230,7 @@ class Hud extends React.Component {
             
           </button>
         </div>
-        {mainComponents.map((component, i) => {
+        {this.state.mainComponents.map((component, i) => {
           if (this.state.images[component.id]) {
             return (
               <button className={'component-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
@@ -237,7 +261,7 @@ class Hud extends React.Component {
             variant="outlined" 
           />
         </div>
-        {components.map((component, i) => {
+        {this.state.miscComponents.map((component, i) => {
           if (this.state.images[component.id]) {
             return (
               <button className={'component-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
