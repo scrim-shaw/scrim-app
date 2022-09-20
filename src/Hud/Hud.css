@@ -25,6 +25,12 @@
   z-index: initial;
 }
 
+#icons8-link {
+  position: fixed;
+  right: 20px;
+  bottom: 0px;
+}
+
 #hint-text {
   font-weight: 600;
 }

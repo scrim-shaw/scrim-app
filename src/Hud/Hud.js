@@ -1,7 +1,7 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
-import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, Typography, styled } from '@mui/material';
+import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, Typography, styled, Link } from '@mui/material';
 import { ClickAwayListener } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -179,6 +179,9 @@ class Hud extends React.Component {
           <span id="hint-text">Hint: While dragging a component or two, press the spacebar to duplicate it.</span>
         </Alert>
       </Snackbar>
+      <div id='icons8-link'>
+        <p>Icons from <a href="https://icons8.com/" target="_blank">icons8.com</a></p>
+      </div>
       <div id="convenience-buttons">
       <ButtonGroup variant="contained">
         <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="medium">
@@ -201,7 +204,6 @@ class Hud extends React.Component {
           </Tooltip>
         </ClickAwayListener>
       </ButtonGroup>
-      
       </div>
       <div id="tool-pane">
         {this.state.tools.map((component, i) => {
