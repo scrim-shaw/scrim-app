@@ -219,7 +219,7 @@ class Hud extends React.Component {
             )
           } else {
             return (
-              <ClipLoader key={component.id} className="component-loader" loading={true} size={55}></ClipLoader>
+              <ClipLoader key={component.id} className="component-loader" loading={true} size={35}></ClipLoader>
             )
           }
         })}
