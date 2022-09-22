@@ -192,6 +192,9 @@ class Hud extends React.Component {
       <div id='icons8-link'>
         <p>Icons from <a href="https://icons8.com/" target="_blank">icons8.com</a></p>
       </div>
+      <div id='feedback-link'>
+        <p>Feedback/suggestions? Email: <a href = "mailto: vk@scrimage.app">vk@scrimage.app</a></p>
+      </div>
       <div id="convenience-buttons">
       <ButtonGroup variant="contained">
         <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="medium">

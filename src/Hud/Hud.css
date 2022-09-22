@@ -31,6 +31,12 @@
   bottom: 0px;
 }
 
+#feedback-link {
+  position: fixed;
+  left: 20px;
+  bottom: 0px;
+}
+
 #hint-text {
   font-weight: 600;
 }
