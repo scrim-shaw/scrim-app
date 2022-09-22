@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
+import mixpanel from 'mixpanel-browser';
 
 const ColorButton = styled(Button)(({ activecolor }) => ({
   backgroundColor: activecolor,
@@ -66,6 +67,8 @@ class Hud extends React.Component {
     this.gtag('js', new Date());
 
     this.gtag('config', 'G-7496DWME29');
+
+    mixpanel.init('ae65f076a41862406a1d484dde5b8fc3', {debug: true, api_host: "https://api.mixpanel.com"}); 
   }
   
   gtag(){
@@ -73,6 +76,7 @@ class Hud extends React.Component {
   }
   
   fetchComponents() {
+    mixpanel.track('visited_page');
     getComponents().then(components => {
       this.setState({
         components: components.allResults,
@@ -81,6 +85,7 @@ class Hud extends React.Component {
         miscComponents: components.miscComponents,
         backdropLoaderOpen: false
       })
+      mixpanel.track('loaded_page');
       this.fetchImages(components.allResults)
     }) 
   }
@@ -135,6 +140,11 @@ class Hud extends React.Component {
       'componentName': component.name
     });
 
+    mixpanel.track('clicked_component', {
+      'componentId': component.id,
+      'componentName': component.name
+    });
+
     if (component) {
       var image = this.state.images[component.id]
       if (image) {
@@ -147,6 +157,7 @@ class Hud extends React.Component {
   }
 
   clearCanvas() {
+    mixpanel.track('clear_canvas');
     window.clearCanvas();
   }
 
@@ -176,6 +187,8 @@ class Hud extends React.Component {
       colorSelectOpen: false,
       color: color
     })
+
+    mixpanel.track('selected_color');
   }
 
   render() {
