@@ -29,12 +29,14 @@
   position: fixed;
   right: 20px;
   bottom: 0px;
+  font-size: small;
 }
 
 #feedback-link {
   position: fixed;
   left: 20px;
   bottom: 0px;
+  font-size: small;
 }
 
 #hint-text {
