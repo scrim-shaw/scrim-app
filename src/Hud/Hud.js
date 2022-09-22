@@ -68,7 +68,9 @@ class Hud extends React.Component {
 
     this.gtag('config', 'G-7496DWME29');
 
-    mixpanel.init('ae65f076a41862406a1d484dde5b8fc3', {debug: true, api_host: "https://api.mixpanel.com"}); 
+    mixpanel.init('ae65f076a41862406a1d484dde5b8fc3', 
+      //{debug: true, api_host: "https://api.mixpanel.com"}
+    ); 
   }
   
   gtag(){
