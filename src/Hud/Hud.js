@@ -187,8 +187,8 @@ class Hud extends React.Component {
       colorSelectOpen: false,
       color: color
     })
-
-    mixpanel.track('selected_color');
+    //console.log('select color: '+color)
+    //mixpanel.track('selected_color');
   }
 
   render() {
