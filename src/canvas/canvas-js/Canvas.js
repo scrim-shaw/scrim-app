@@ -1,7 +1,7 @@
 
 import { Shape, intersects, distance } from './Shape.js';
 import { BrushGenerator, Brush } from './BrushGenerator.js';
-import { Sprite, Point, Container } from 'pixi.js';
+import { Sprite, Point, Container, Texture } from 'pixi.js';
 import { SmoothGraphics as Graphics } from '@pixi/graphics-smooth';
 import { ComponentBox } from './ComponentBox.js';
 
@@ -147,7 +147,8 @@ export class Canvas {
         imageUrl = componentData.icon
       }
 
-      component = Sprite.from(imageUrl);
+      const texture = new Texture.from(imageUrl)
+      component = new Sprite(texture);
     } else if (componentData.type === 'brush') {
       if (texture) {
         component = new Sprite(texture);

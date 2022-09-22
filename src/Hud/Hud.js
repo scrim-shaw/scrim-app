@@ -86,13 +86,23 @@ class Hud extends React.Component {
   }
 
   fetchImages(components) {
-    components.forEach(component => {
-      fetchImage(component.icon).then(url => {
+    components.forEach((component, i) => {
+      if (component.icon) {
+        fetchImage(component.icon).then(url => {
+          var images = this.state.images;
+          images[component.id] = url
+
+          this.setState({images: images})
+        })
+      } else if (component.svg) {
+        const blob = new Blob([component.svg], {type: 'image/svg+xml'});
+        const url = URL.createObjectURL(blob);
+
         var images = this.state.images;
         images[component.id] = url
 
         this.setState({images: images})
-      })
+      }
     })
   }
 
@@ -209,7 +219,7 @@ class Hud extends React.Component {
         {this.state.tools.map((component, i) => {
           if (this.state.images[component.id]) {
             return (
-              <Tooltip title={component.name} placement="right">
+              <Tooltip key={component.id} title={component.name} placement="right">
                 <button className={'tool-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
                   {this.state.images[component.id] &&
                     <img key={component.id} width={35} height={35} src={this.state.images[component.id]}></img>
