@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Scrimage",
+  "name": "Scrimage: A rapid visual communication tool.",
   "icons": [
     {
       "src": "favicon.ico",
