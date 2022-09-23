@@ -19,7 +19,7 @@ void main(){
 }
 `;
 
-const brushSize = 15.0
+const brushSize = 8.0
 
 export class BrushGenerator {
     constructor(renderer) {

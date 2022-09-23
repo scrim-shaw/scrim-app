@@ -1,7 +1,7 @@
 import './Hud.css';
 import React from 'react';
 import { getComponents, fetchImage } from './HudDataManager';
-import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, Typography, styled, Link } from '@mui/material';
+import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, styled, Popper, Paper } from '@mui/material';
 import { ClickAwayListener } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -189,7 +189,6 @@ class Hud extends React.Component {
       colorSelectOpen: false,
       color: color
     })
-    //console.log('select color: '+color)
     //mixpanel.track('selected_color');
   }
 
@@ -208,29 +207,29 @@ class Hud extends React.Component {
         <p>Icons from <a href="https://icons8.com/" target="_blank">icons8.com</a></p>
       </div>
       <div id='feedback-link'>
-        <p>Feedback/suggestions? Email: <a href = "mailto: vk@scrimage.app">vk@scrimage.app</a></p>
+        <p>Feedback/suggestions? <br/> Email: <a href = "mailto: vk@scrimage.app">vk@scrimage.app</a></p>
       </div>
       <div id="convenience-buttons">
       <ButtonGroup variant="contained">
         <IconButton onClick={this.clearCanvas.bind(this)} color="primary" aria-label="delete" size="medium">
           <DeleteIcon fontSize="inherit" />
         </IconButton>
-        <ClickAwayListener onClickAway={this.selectColor.bind(this, null)}>
-          <Tooltip open={this.state.colorSelectOpen} title={
-            <React.Fragment>
-              <ButtonGroup variant="contained">
-                <ColorButton onClick={this.selectColor.bind(this, "#3498db")} activecolor="#3498db"><p></p></ColorButton>
-                <ColorButton onClick={this.selectColor.bind(this, "#9b59b6")} activecolor="#9b59b6"><p></p></ColorButton>
-                <ColorButton onClick={this.selectColor.bind(this, "#2ecc71")} activecolor="#2ecc71"><p></p></ColorButton>
-                <ColorButton onClick={this.selectColor.bind(this, "#e67e22")} activecolor="#e67e22"><p></p></ColorButton>
-                <ColorButton onClick={this.selectColor.bind(this, "#e74c3c")} activecolor="#e74c3c"><p></p></ColorButton>
-                <ColorButton onClick={this.selectColor.bind(this, "#f1c40f")} activecolor="#f1c40f"><p></p></ColorButton>
-              </ButtonGroup>
-            </React.Fragment>
-          }>
-            <ColorButton onClick={this.openColorSelect.bind(this)} activecolor={this.state.color}></ColorButton>
-          </Tooltip>
-        </ClickAwayListener>
+          <ClickAwayListener onClickAway={this.selectColor.bind(this, null)}>
+            <ColorButton id='select-color-button' onClick={this.openColorSelect.bind(this)} activecolor={this.state.color}></ColorButton>
+          </ClickAwayListener>
+            <Popper open={this.state.colorSelectOpen} anchorEl={document.getElementById("select-color-button")}>
+              <Paper style={{padding: "10px"}}>
+                <ButtonGroup variant="contained">
+                  <ColorButton onClick={this.selectColor.bind(this, "#3498db")} activecolor="#3498db"><p></p></ColorButton>
+                  <ColorButton onClick={this.selectColor.bind(this, "#9b59b6")} activecolor="#9b59b6"><p></p></ColorButton>
+                  <ColorButton onClick={this.selectColor.bind(this, "#2ecc71")} activecolor="#2ecc71"><p></p></ColorButton>
+                  <ColorButton onClick={this.selectColor.bind(this, "#e67e22")} activecolor="#e67e22"><p></p></ColorButton>
+                  <ColorButton onClick={this.selectColor.bind(this, "#e74c3c")} activecolor="#e74c3c"><p></p></ColorButton>
+                  <ColorButton onClick={this.selectColor.bind(this, "#f1c40f")} activecolor="#f1c40f"><p></p></ColorButton>
+                </ButtonGroup>
+              </Paper>
+          </Popper>
+        
       </ButtonGroup>
       </div>
       <div id="tool-pane">

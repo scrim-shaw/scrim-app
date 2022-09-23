@@ -300,6 +300,10 @@ export class ComponentBox {
                     updateHeight();
                     component.r = new Point(component.x+(component.width/2), component.y+(component.height/2))
                 }
+
+                if ((scaleX*10) % 0.5 == 0 || (scaleY*10) % 0.5 == 0) {
+                    this.canvas.updateGraphics(component)
+                }
             }
         }
     }
@@ -307,7 +311,10 @@ export class ComponentBox {
     finishResizing() {
         for (let i = 0; i < this.components.length; i++) {
             var component = this.components[i];
-            delete component.initialSize
+            if (component.startingDim) {
+                this.canvas.updateGraphics(component)
+                delete component.startingDim
+            }
         }
     }
 

@@ -18,7 +18,9 @@ export class Canvas {
     this.brushGenerator = new BrushGenerator(app.renderer);
     this.brushTexture = this.brushGenerator.get(0x000000, 1.0, false)
 
-    this.color = 0x9b59b6
+    this.colors = [0x3498db, 0x9b59b6, 0x2ecc71, 0xe67e22, 0xe74c3c, 0xf1c40f]
+
+    this.color = this.colors[0]
     this.setupKeyPress();
   }
 
@@ -30,6 +32,7 @@ export class Canvas {
     this.setupHighlighter();
 
     this.componentBox = new ComponentBox();
+    this.componentBox.canvas = this;
 
     this.drawBuffer = new Container();
     this.container.addChild(this.drawBuffer);
@@ -273,14 +276,7 @@ export class Canvas {
       if (event.key === ' ') {
         this.components.forEach((component) => {
           if (component.selected) {
-            const newComponent = this.createComponent(component.x, component.y, component.componentData, null, component.textureRef, component.width, component.height);
-            this.addComponent(newComponent, false);
-
-            this.container.removeChild(component);
-            this.container.addChild(component);
-
-            this.container.removeChild(this.componentBox.getBox());
-            this.container.addChild(this.componentBox.getBox())
+            this.duplicate(component, false)
           }
         })
       }
@@ -314,33 +310,6 @@ export class Canvas {
           }
         }
       }
-
-      // var one = {
-      //   "options": {
-      //       "disappear": true
-      //   },
-      //   "id": "18",
-      //   "icon": "https://scrimage-icons.s3.amazonaws.com/icons8-pen-disappear-64.png",
-      //   "name": "Disappearing Pen",
-      //   "type": "brush"
-      // }
-      // var two = {
-      //   "options": {
-      //       "disappear": false
-      //   },
-      //   "id": "16",
-      //   "icon": "https://scrimage-icons.s3.amazonaws.com/icons8-pen-64.png",
-      //   "name": "Pen",
-      //   "type": "brush"
-      // }
-
-      // if (event.key === '1') {
-      //   this.setActiveComponent(one)
-      // }
-
-      // if (event.key === '2') {
-      //   this.setActiveComponent(two)
-      // }
     }, false);
   }
 
@@ -354,6 +323,39 @@ export class Canvas {
       this.foreground.height = vw;
     }
     this.setupGridLines(vw, vh);
+  }
+
+  duplicate(component, intelligent) {
+    var randomColor = this.colors[Math.floor(Math.random()*this.colors.length)]
+    var color = intelligent ? randomColor : component.color
+
+    const graphics = Shape.graphicsFromComponent(component, color)
+    
+    var newComponent;
+    if (graphics !== null) {
+      newComponent = this.createComponent(graphics.center.x, graphics.center.y, component.componentData, graphics)
+      newComponent.color = color
+    } else {
+      newComponent = this.createComponent(component.x, component.y, component.componentData, null, component.textureRef, component.width, component.height);
+    }
+
+    this.addComponent(newComponent, false);
+
+    this.container.removeChild(component);
+    this.container.addChild(component);
+
+    this.container.removeChild(this.componentBox.getBox());
+    this.container.addChild(this.componentBox.getBox())
+  }
+
+  updateGraphics(component) {
+    const graphics = Shape.graphicsFromComponent(component, component.color)
+    if (graphics !== null) {
+      const texture = this.app.renderer.generateTexture(graphics, { resolution: window.devicePixelRatio });
+
+      component.texture = texture;
+      component.textureRef = texture;
+    }
   }
 
   onPointerDownForeground(event) {
@@ -412,6 +414,7 @@ export class Canvas {
       if (this.drawingGraphics && this.drawingGraphics.shouldCreate) {
         this.drawingGraphics.parent.removeChild(this.drawingGraphics);
         var newComponent = this.canvas.createComponent(this.drawingGraphics.center.x, this.drawingGraphics.center.y, this.canvas.activeComponent, this.drawingGraphics);
+        newComponent.color = this.canvas.color;
         this.canvas.addComponent(newComponent);
       }
 

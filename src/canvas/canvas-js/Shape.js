@@ -1,6 +1,32 @@
-import { Point } from "pixi.js";
+import { Graphics, Point } from "pixi.js";
 
 export class Shape {
+    static graphicsFromComponent(component, color) {
+        if (component.componentData.type !== 'shape' || component.componentData.name === "Arrow") {
+            return null
+        }
+
+        var graphics = new Graphics();
+        graphics.center = new Point(component.x, component.y)
+
+        graphics
+            .beginFill(color)
+            .lineStyle(1, 0x2c3e50, 0.0)
+        switch (component.componentData.name) {
+            case 'Rectangle':
+                graphics
+                    .drawRoundedRect(component.x - (component.width/2), component.y - (component.height/2), component.width, component.height, 6.0)
+            case 'Ellipse':
+                graphics
+                    .drawEllipse(component.x, component.y, component.width / 2, component.height / 2)
+        }
+
+        graphics
+            .endFill()
+
+        return graphics
+    }
+
     static updateGraphics(component, graphics, color, initialCursorPosition, currentCursorPosition) {
         graphics.clear();
 
