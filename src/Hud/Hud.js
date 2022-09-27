@@ -10,6 +10,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
 import mixpanel from 'mixpanel-browser';
+import { debounce } from './Utils'
 
 const ColorButton = styled(Button)(({ activecolor }) => ({
   backgroundColor: activecolor,
@@ -130,6 +131,9 @@ class Hud extends React.Component {
 
   toggleComponentPane() {
     const componentPaneMaximized = !this.state.componentPaneMaximized
+    if (componentPaneMaximized) {
+      mixpanel.track('expanded_component_pane');
+    }
     this.setState({
       componentPaneMaximized: componentPaneMaximized,
       classes: {
@@ -197,6 +201,16 @@ class Hud extends React.Component {
       colorSelectOpen: true
     })
   }
+
+  searchComponents = debounce(function(event) {
+    const searchText = event.target.value;
+
+    if (searchText !== '') {
+      mixpanel.track('searched_for_component', {
+        'searchText': searchText
+      });
+    }
+  }, 1000);
 
   selectColor(color) {
     if (color === null) {
@@ -319,6 +333,7 @@ class Hud extends React.Component {
           <TextField 
             sx={{marginLeft: "60px", marginTop: "20px", marginBottom: "20px", width: "calc(100% - 120px)"}} 
             size="small"
+            onChange={this.searchComponents.bind(this)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
