@@ -1,6 +1,6 @@
 import './Hud.css';
 import React from 'react';
-import { getComponents, fetchImage } from './HudDataManager';
+import { getTools, getComponents, fetchImage } from './HudDataManager';
 import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress, IconButton, ButtonGroup, Button, Tooltip, styled, Popper, Paper } from '@mui/material';
 import { ClickAwayListener } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -50,6 +50,7 @@ class Hud extends React.Component {
 
   componentDidMount() {
     this.setupAnalytics();
+    this.fetchTools();
     this.fetchComponents();
 
     this.selectColor("#3498db")
@@ -80,17 +81,30 @@ class Hud extends React.Component {
   
   fetchComponents() {
     mixpanel.track('visited_page');
+    this.setState({
+      fetchingComponents: true 
+    })
     getComponents().then(components => {
       this.setState({
         components: components.allResults,
-        tools: components.tools, 
         mainComponents: components.mainComponents,
         miscComponents: components.miscComponents,
+        fetchingComponents: false
+      })
+      mixpanel.track('loaded_components');
+      this.fetchImages(components.allResults)
+    }) 
+  }
+
+  fetchTools() {
+    getTools().then(tools => {
+      this.setState({
+        tools: tools,
         backdropLoaderOpen: false
       })
       mixpanel.track('loaded_page');
-      this.fetchImages(components.allResults)
-    }) 
+      this.fetchImages(tools)
+    })
   }
 
   fetchImages(components) {
@@ -136,7 +150,11 @@ class Hud extends React.Component {
   }
 
   updateComponent(id) {
-    var component = this.state.components.find(component => { return component.id === id })
+    var component = null;
+    component = this.state.tools.find(component => { return component.id === id })
+    if (component === null || component === undefined) {
+      component = this.state.components.find(component => { return component.id === id })
+    }
 
     this.gtag('event', 'clicked_component', {
       'componentId': component.id,
@@ -277,7 +295,7 @@ class Hud extends React.Component {
             
           </button>
         </div>
-        {this.state.mainComponents.map((component, i) => {
+        {!this.state.fetchingComponents && this.state.mainComponents.map((component, i) => {
           if (this.state.images[component.id]) {
             return (
               <button className={'component-button' + (this.state.activeComponent === component.id ? " component-button-active" : "")} key={component.id} onClick={this.updateComponent.bind(this, component.id)}>
@@ -292,6 +310,11 @@ class Hud extends React.Component {
             )
           }
         })}
+        {this.state.fetchingComponents &&
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => {
+            return (<ClipLoader key={i} className="component-loader" loading={true} size={55} ></ClipLoader>)
+          })
+        }
         <div>
           <TextField 
             sx={{marginLeft: "60px", marginTop: "20px", marginBottom: "20px", width: "calc(100% - 120px)"}} 
