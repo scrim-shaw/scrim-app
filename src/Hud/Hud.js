@@ -5,6 +5,7 @@ import { TextField, InputAdornment, Snackbar, Alert, Backdrop, CircularProgress,
 import { ClickAwayListener } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete'
+import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
@@ -180,7 +181,22 @@ class Hud extends React.Component {
   }
 
   selectColor(color) {
-    if (color === null) {color = this.state.color}
+    if (color === null) {
+      this.setState({
+        colorSelectOpen: false,
+      })
+      return;
+    } else if (color === "#random") {
+      window.updateParams({
+        color: color
+      })
+      this.setState({
+        colorSelectOpen: false,
+        color: "#3498db"
+      })
+      return
+    }
+
     const colorNum = parseInt(color.replace(/^#/, ''), 16)
     window.updateParams({
       color: colorNum
@@ -189,7 +205,6 @@ class Hud extends React.Component {
       colorSelectOpen: false,
       color: color
     })
-    //mixpanel.track('selected_color');
   }
 
   render() {
@@ -226,6 +241,7 @@ class Hud extends React.Component {
                   <ColorButton onClick={this.selectColor.bind(this, "#e67e22")} activecolor="#e67e22"><p></p></ColorButton>
                   <ColorButton onClick={this.selectColor.bind(this, "#e74c3c")} activecolor="#e74c3c"><p></p></ColorButton>
                   <ColorButton onClick={this.selectColor.bind(this, "#f1c40f")} activecolor="#f1c40f"><p></p></ColorButton>
+                  <IconButton onClick={this.selectColor.bind(this, "#random")} color="primary" aria-label="delete" size="medium"><ShuffleIcon fontSize="inherit"/></IconButton>
                 </ButtonGroup>
               </Paper>
           </Popper>

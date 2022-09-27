@@ -61,6 +61,30 @@ export class Canvas {
     this.components = []
   }
 
+  randomColor() {
+    // TODO: make it a smart shuffle?
+    return this.colors[Math.floor(Math.random()*this.colors.length)]
+  }
+
+  setColor(color) {
+    var random = false;
+    if (color === "#random") {
+      color = this.randomColor()
+      random = true
+    } else {
+      this.color = color;
+    }
+    this.components.forEach(component => {
+      if (component.selected) {
+        component.color = color
+        this.updateGraphics(component);
+        if (random) {
+          color = this.randomColor()
+        }
+      } 
+    })
+  }
+
   setActiveTool(activeTool) {
     this.activeTool = activeTool;
   }
@@ -326,7 +350,7 @@ export class Canvas {
   }
 
   duplicate(component, intelligent) {
-    var randomColor = this.colors[Math.floor(Math.random()*this.colors.length)]
+    var randomColor = this.randomColor()
     var color = intelligent ? randomColor : component.color
 
     const graphics = Shape.graphicsFromComponent(component, color)
