@@ -25,7 +25,7 @@ export class TextBox extends Text {
 
         this.editWidth = 500;
 
-        this.width = this.editWidth
+        //this.width = this.editWidth
         this.x = this.originalLeft + (this.width / 2)
         this.y = this.originalTop + (this.height / 2)
 
@@ -66,35 +66,37 @@ export class TextBox extends Text {
     }
 
     stopEditing() {
-        var sampleText = new Text(this.text, this.initialStyle)
+        // var sampleText = new Text(this.text, this.initialStyle)
 
         this.editing = false
         this._textArea.style.display = 'none'
-        this.width = sampleText.width
-        this.height = sampleText.height
+        // this.width = sampleText.width
+        // this.height = sampleText.height
         this.x = this.originalLeft + (this.width / 2)
         this.y = this.originalTop + (this.height / 2)
         this.visible = true;
 
         this.componentData.content = this.text
 
-        sampleText = null
+        // sampleText = null
         this.stopListeners();
     }
 
     _onInputInput(e) {
         this._textArea.style.height = "1px";
         this._textArea.style.height = (25+this._textArea.scrollHeight)+"px";
+        var t = this._textArea.value
         this.text = this._textArea.value
 
-        var sampleText = new Text(this.text, this.initialStyle)
+        // var sampleText = new Text(this.text, this.initialStyle)
 
-        this.width = this.editWidth
-        this.height = sampleText.height
+        //this.width = this.editWidth
+        // this.width = sampleText.width
+        // this.height = sampleText.height
 
         this.x = this.originalLeft + (this.width / 2)
         this.y = this.originalTop + (this.height / 2)
 
-        sampleText = null
+        // sampleText = null
     }
 }
