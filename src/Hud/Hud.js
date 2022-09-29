@@ -10,7 +10,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { ClipLoader } from 'react-spinners';
 import mixpanel from 'mixpanel-browser';
-import { debounce } from './Utils'
+import { debounce } from '../Utils'
 
 const ColorButton = styled(Button)(({ activecolor }) => ({
   backgroundColor: activecolor,

@@ -212,6 +212,8 @@ export class TextInput extends Container {
     }
 
     _onInputKeyUp(e) {
+        this._dom_input.style.height = "1px";
+        this._dom_input.style.height = (25+this._dom_input.scrollHeight)+"px";
         this.emit('keyup', e.keyCode)
     }
 

@@ -77,14 +77,17 @@ export class ComponentBox {
     }
 
     setupPoints() {
+        const pointRadius = 6.0
+        const pointHitAreaRadius = 10.0
+
         this.p1
             .clear()
             .lineStyle(2, this.color, 1.0)
             .beginFill(0xFFFFFF)
-            .drawCircle(this.dim.minX, this.dim.minY, 6.0)
+            .drawCircle(this.dim.minX, this.dim.minY, pointRadius)
             .endFill()
     
-        var p1Hitarea = new Circle(this.dim.minX, this.dim.minY, 6.0);
+        var p1Hitarea = new Circle(this.dim.minX, this.dim.minY, pointHitAreaRadius);
         this.p1.hitArea = p1Hitarea
         this.p1.interactive = true;
         this.p1.buttonMode = true;
@@ -95,10 +98,10 @@ export class ComponentBox {
             .clear()
             .lineStyle(2, this.color, 1.0)
             .beginFill(0xFFFFFF)
-            .drawCircle(this.dim.maxX, this.dim.minY, 6.0)
+            .drawCircle(this.dim.maxX, this.dim.minY, pointRadius)
             .endFill()
 
-        var p2Hitarea = new Circle(this.dim.maxX, this.dim.minY, 6.0);
+        var p2Hitarea = new Circle(this.dim.maxX, this.dim.minY, pointHitAreaRadius);
         this.p2.hitArea = p2Hitarea
         this.p2.interactive = true;
         this.p2.buttonMode = true;
@@ -109,10 +112,10 @@ export class ComponentBox {
             .clear()
             .lineStyle(2, this.color, 1.0)
             .beginFill(0xFFFFFF)
-            .drawCircle(this.dim.minX, this.dim.maxY, 6.0)
+            .drawCircle(this.dim.minX, this.dim.maxY, pointRadius)
             .endFill()
 
-        var p3Hitarea = new Circle(this.dim.minX, this.dim.maxY, 6.0);
+        var p3Hitarea = new Circle(this.dim.minX, this.dim.maxY, pointHitAreaRadius);
         this.p3.hitArea = p3Hitarea
         this.p3.interactive = true;
         this.p3.buttonMode = true;
@@ -123,10 +126,10 @@ export class ComponentBox {
             .clear()
             .lineStyle(2, this.color, 1.0)
             .beginFill(0xFFFFFF)
-            .drawCircle(this.dim.maxX, this.dim.maxY, 6.0)
+            .drawCircle(this.dim.maxX, this.dim.maxY, pointRadius)
             .endFill()
 
-        var p4Hitarea = new Circle(this.dim.maxX, this.dim.maxY, 6.0);
+        var p4Hitarea = new Circle(this.dim.maxX, this.dim.maxY, pointHitAreaRadius);
         this.p4.hitArea = p4Hitarea
         this.p4.interactive = true;
         this.p4.buttonMode = true;
@@ -237,15 +240,16 @@ export class ComponentBox {
     resize(point, boxDim, scaleX, scaleY) {
         for (let i = 0; i < this.components.length; i++) {
             var component = this.components[i];
-            if (component.selected) {
+            if (component.selected && component.resizable) {
                 var updateX = () => {};
                 var updateY = () => {};
+                var newWidth = component.startingDim.width * scaleX;
+                var newHeight = component.startingDim.height * scaleY;
+
                 var updateWidth = () => {
-                    const newWidth = component.startingDim.width * scaleX;
                     component.width = newWidth
                 }
                 var updateHeight = () => {
-                    const newHeight = component.startingDim.height * scaleY;
                     component.height = newHeight
                 }
 
@@ -302,7 +306,7 @@ export class ComponentBox {
                 }
 
                 if ((scaleX*10) % 0.5 == 0 || (scaleY*10) % 0.5 == 0) {
-                    this.canvas.updateGraphics(component)
+                    this.scrimCanvas.updateGraphics(component)
                 }
             }
         }
@@ -312,7 +316,7 @@ export class ComponentBox {
         for (let i = 0; i < this.components.length; i++) {
             var component = this.components[i];
             if (component.startingDim) {
-                this.canvas.updateGraphics(component)
+                this.scrimCanvas.updateGraphics(component)
                 delete component.startingDim
             }
         }
