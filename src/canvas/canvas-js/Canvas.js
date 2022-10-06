@@ -6,6 +6,7 @@ import { SmoothGraphics as Graphics } from '@pixi/graphics-smooth';
 import { ComponentBox } from './ComponentBox.js';
 import { TextBox } from './TextBox'
 import { debounce } from '../../Utils.js';
+import { Animation } from './Animation.js';
 
 export class Canvas {
   constructor(app, vw, vh) {
@@ -21,6 +22,9 @@ export class Canvas {
     this.brushTexture = this.brushGenerator.get(0x000000, 1.0, false)
 
     this.colors = [0x3498db, 0x9b59b6, 0x2ecc71, 0xe67e22, 0xe74c3c, 0xf1c40f]
+
+    this.creatingAnimations = false;
+    this.shifting = false;
 
     this.color = this.colors[0]
     this.setupKeyPress();
@@ -238,6 +242,12 @@ export class Canvas {
       graphics.destroy();
     }
 
+    window.updatedCanvas('created_component', {
+      component: component.componentData.name,
+      comonentId: component.componentData.id,
+      duplicated: duplicated
+    })
+
     return component;
   }
 
@@ -353,17 +363,54 @@ export class Canvas {
   }
 
   setupKeyPress() {
+    document.body.addEventListener("keydown", (event) => {
+      if (event.shiftKey) {
+        this.shifting = true
+      }
+      if (event.key === 'a') {
+        if (this.creatingAnimations == false) {
+          this.creatingAnimations = true
+          this.components.forEach(component => {
+            if (component.selected) {
+              if (component.animation) {
+                component.animation = null;
+              }
+            }
+          })
+        }
+      }
+    });
     document.addEventListener('keyup', (event) => {
       if (this.keyDetectionSuspended) { return }
+      if (event.shiftKey) {
+        this.shifting = false
+      }
+      if (event.key === 'a') {
+        if (this.creatingAnimations) {
+          this.creatingAnimations = false
+          var maxFrames = 0;
+          this.components.forEach(component => {
+            if (component.animation) {
+              maxFrames = Math.max(maxFrames, component.animation.frames.length)
+            }
+          })
+
+          window.updatedCanvas('finished_recording_animation', {
+            maxFrames: maxFrames
+          })
+        }
+      }
       if (event.key === ' ') {
+        var numDuplicated = 0;
         this.components.forEach((component) => {
           if (component.selected) {
             this.duplicate(component, false)
+            numDuplicated++;
           }
         })
       }
 
-      if (event.key === 'Backspace') {
+      if (event.key === 'Backspace' || event.key === 'Delete') {
         var newComponents = []
         for (let i = 0; i < this.components.length; i++) {
           const component = this.components[i];
@@ -589,5 +636,22 @@ export class Canvas {
 
   update() {
     this.componentBox.update(this.components);
+    if (this.creatingAnimations) {
+      this.components.forEach(component => {
+        if (component.selected) {
+          if (!component.animation) {
+            component.animation = new Animation()
+          }
+
+          component.animation.addFrame(component.x, component.y)
+        }
+      })
+    } else {
+      this.components.forEach(component => {
+        if (component.animation) {
+          component.animation.playNextFrame(component);
+        }
+      })
+    }
   }
 }

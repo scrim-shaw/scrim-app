@@ -41,6 +41,11 @@ class Hud extends React.Component {
     }
 
     window.activeComponentUpdated = this.activeComponentUpdated.bind(this)
+    window.updatedCanvas = this.updatedCanvas.bind(this)
+  }
+
+  updatedCanvas(event, data) {
+    mixpanel.track(event, data);
   }
 
   activeComponentUpdated(componentId) {
@@ -247,7 +252,10 @@ class Hud extends React.Component {
         open={this.state.snackbarOpen}
       >
         <Alert variant="filled" onClose={this.handleClose.bind(this)} severity="info" sx={{ width: '100%' }}>
-          <span id="hint-text">Hint: While dragging a component or two, press the spacebar to duplicate it.</span>
+          <span id="hint-text">Hints: 
+          <br/>   - While dragging a component or two, press the spacebar to duplicate it.
+          <br/>   - Hold the 'A' key when moving a component to record an animation.
+          </span>
         </Alert>
       </Snackbar>
       <div id='icons8-link'>
